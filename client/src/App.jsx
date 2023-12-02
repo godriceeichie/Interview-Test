@@ -8,26 +8,32 @@ import {
 } from "./validation/formValidation";
 
 function App() {
-  const [name, setName] = useState();
-  const [sector, setSector] = useState();
+  //State for each input fields
+  const [name, setName] = useState("");
+  const [sector, setSector] = useState("");
   const [hasAgreed, setHasAgreed] = useState(false);
 
+  //The state holding input fields together
   const [data, setData] = useState({});
   const [sectors, setSectors] = useState([]);
 
+  //State to track errors in the input fields
   const [errors, setErrors] = useState();
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     instance
       .get("/sectors")
       .then((res) => {
         setSectors(res.data.sectors);
-        console.log(res.data.sectors);
       })
       .catch((err) => console.log(err));
   }, []);
 
+  //Function to submit data
   const handleSubmit = (e) => {
     e.preventDefault();
     const nameError = validateName(name);
@@ -40,7 +46,7 @@ function App() {
       hasAgreed: agreementError,
     });
 
-    if (nameError && sectorError && agreementError) {
+    if (!nameError && !sectorError && !agreementError) {
       setIsLoading(true);
       // Proceed with form submission or other actions
       setData({
@@ -48,16 +54,23 @@ function App() {
         sector,
         hasAgreed,
       });
+    }
+  };
+
+  useEffect(() => {
+    // This effect will run whenever the 'data' state changes
+    if (Object.keys(data).length > 0) {
+  
+      // Now you can proceed with posting the data
       instance
         .post("/formData", data)
         .then((res) => {
-          console.log(res.data);
           setIsLoading(false);
+          setSuccess(true)
         })
         .catch((er) => console.log(er));
-      console.log(data);
     }
-  };
+  }, [data]); // This effect depends on the 'data' state
   return (
     <>
       <section className="form-wrapper">
@@ -69,6 +82,9 @@ function App() {
               involved in.
             </p>
           </div>
+          {
+            success && <div className="successMessage">Form Data submitted succesfully</div>
+          }
           <form className="form-fields" onSubmit={handleSubmit}>
             <div className="form-field-container">
               <label htmlFor="">Name:</label>
@@ -102,8 +118,8 @@ function App() {
               {errors?.sector && <span className="error">{errors.sector}</span>}
             </div>
             <div className="form-field-checkbox-container">
-              <input type="checkbox" name="" id="" onChange={(e) => setHasAgreed(true)}/>
-              <label>Agree to terms</label>
+              <input type="checkbox" name="agreement" htmlFor="agreement" onChange={(e) => setHasAgreed(e.target.checked)}/>
+              <label id="agreement">Agree to terms</label>
               {errors?.hasAgreed && (
                 <span className="error">{errors.hasAgreed}</span>
               )}

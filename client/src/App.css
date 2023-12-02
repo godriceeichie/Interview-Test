@@ -117,3 +117,11 @@ button{
     transform: rotate(360deg);
   }
 }
+
+.successMessage{
+  color: #36AE7C;
+  padding: 10px;
+  background: #9ADE7B;
+  border: 1px solid #36AE7C;
+  border-radius: 4px;
+}
