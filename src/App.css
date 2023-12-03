@@ -21,8 +21,6 @@ body{
 
 .form{
   width: 500px;
-  /* min-height: 450px;
-  max-height: 600px; */
   border-radius: 1rem;
   padding: 2rem 2.5rem;
   background-color: rgb(10, 10, 10);
@@ -124,4 +122,10 @@ button{
   background: #9ADE7B;
   border: 1px solid #36AE7C;
   border-radius: 4px;
+}
+
+@media  screen and (max-width: 500px) {
+  .form{
+    padding-inline: 2.75rem;
+  }
 }
